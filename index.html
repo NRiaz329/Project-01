@@ -45,44 +45,119 @@
     <title>PDF Editor - Free Tools</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f5f7fa;
         }
         header {
-            background-color: #007bff;
+            background: linear-gradient(90deg, #007bff, #0056b3);
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 2rem 1rem;
+            position: relative;
         }
         header h1 {
             margin: 0;
             font-size: 2.5rem;
+            cursor: pointer;
+        }
+        header p {
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        #adminBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            padding: 0.5rem 1rem;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        #adminBtn.visible {
+            opacity: 1;
+        }
+        nav {
+            background: #333;
+            padding: 1rem;
+        }
+        nav button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        nav button:hover {
+            background: #0056b3;
+        }
+        nav button.active {
+            background: #0056b3;
+            font-weight: bold;
+        }
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section.active {
+            display: block;
+        }
+        .home, .contact {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            text-align: center;
+        }
+        .home h2, .contact h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .contact form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .contact input, .contact textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
             padding: 2rem;
-            gap: 1rem;
         }
         .card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         .card h3 {
             margin: 0;
             color: #333;
+            font-size: 1.2rem;
         }
         .modal {
             display: none;
@@ -91,70 +166,187 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
         .modal-content {
             background: white;
             padding: 2rem;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
         }
-        .modal-content textarea, .modal-content input {
+        .modal-content textarea, .modal-content input, .modal-content select {
             width: 100%;
             margin: 1rem 0;
-            padding: 0.5rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal-content select {
+            background: #007bff;
+            color: white;
+            padding-right: 2rem;
+            cursor: pointer;
+        }
+        .modal-content select:focus {
+            outline: none;
+            border-color: #0056b3;
         }
         .modal-content button {
             background: #007bff;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background 0.2s;
+            margin: 0.5rem;
         }
         .modal-content button:hover {
             background: #0056b3;
         }
         .close {
-            float: right;
-            font-size: 1.5rem;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.8rem;
             cursor: pointer;
+        }
+        .progress-bar {
+            display: none;
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background: #007bff;
+            transition: width 0.1s;
+        }
+        .file-preview {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .page-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .page-preview canvas {
+            border: 1px solid #ddd;
+            cursor: move;
+        }
+        .page-selection {
+            margin: 1rem 0;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .output-preview {
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: center;
+        }
+        .output-preview img, .output-preview canvas {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                width: 95%;
+            }
+            nav button {
+                margin: 0.2rem;
+                padding: 0.6rem 1rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            header p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>PDF Editor - Free Tools</h1>
+        <h1 onclick="handleHeaderClick()">PDF Editor - Free Tools</h1>
         <p>All the tools you need to work with PDFs in one place, 100% free!</p>
+        <button id="adminBtn" onclick="openModal('adminLogModal')">Admin Access</button>
     </header>
-    <div class="container">
-        <div class="card" onclick="openModal('textToPdfModal')">
-            <h3>Text to PDF</h3>
+    <nav>
+        <button id="homeBtn" class="active" onclick="showSection('home')">Home</button>
+        <button id="toolsBtn" onclick="showSection('tools')">Tools</button>
+        <button id="contactBtn" onclick="showSection('contact')">Contact</button>
+    </nav>
+    <div id="home" class="section home active">
+        <h2>Welcome to PDF Editor</h2>
+        <p>Transform your PDFs with our free, easy-to-use tools. Convert, edit, merge, organize, optimize, or secure your documents in just a few clicks. Get started now!</p>
+        <button onclick="showSection('tools')" style="background: #007bff; color: white; padding: 0.8rem 1.5rem; border-radius: 5px;">Explore Tools</button>
+    </div>
+    <div id="tools" class="section">
+        <div class="container">
+            <div class="card" onclick="openModal('textToPdfModal')">
+                <h3>Text to PDF</h3>
+            </div>
+            <div class="card" onclick="openModal('pdfToTextModal')">
+                <h3>PDF to Text</h3>
+            </div>
+            <div class="card" onclick="openModal('mergePdfModal')">
+                <h3>Workflows (Merge)</h3>
+            </div>
+            <div class="card" onclick="openModal('organizePdfModal')">
+                <h3>Organize PDF</h3>
+            </div>
+            <div class="card" onclick="openModal('optimizePdfModal')">
+                <h3>Optimize PDF</h3>
+            </div>
+            <div class="card" onclick="openModal('convertPdfModal')">
+                <h3>Convert PDF</h3>
+            </div>
+            <div class="card" onclick="openModal('editPdfModal')">
+                <h3>Edit PDF</h3>
+            </div>
+            <div class="card" onclick="openModal('pdfSecurityModal')">
+                <h3>PDF Security</h3>
+            </div>
         </div>
-        <div class="card" onclick="openModal('pdfToTextModal')">
-            <h3>PDF to Text</h3>
-        </div>
-        <!-- How would you design cards for other features like Workflows or PDF Security? -->
-        <div class="card" onclick="alert('Workflows: Coming soon!')">
-            <h3>Workflows</h3>
-        </div>
-        <div class="card" onclick="alert('Organize PDF: Coming soon!')">
-            <h3>Organize PDF</h3>
-        </div>
-        <div class="card" onclick="alert('Optimize PDF: Coming soon!')">
-            <h3>Optimize PDF</h3>
-        </div>
-        <div class="card" onclick="alert('Convert PDF: Coming soon!')">
-            <h3>Convert PDF</h3>
-        </div>
-        <div class="card" onclick="alert('Edit PDF: Coming soon!')">
-            <h3>Edit PDF</h3>
-        </div>
-        <div class="card" onclick="alert('PDF Security: Coming soon!')">
-            <h3>PDF Security</h3>
+    </div>
+    <div id="contact" class="section contact">
+        <h2>Contact Us</h2>
+        <p>We'd love to hear from you! Fill out the form below with your feedback or inquiries.</p>
+        <form id="contactForm">
+            <input type="text" id="contactName" placeholder="Your Name" required>
+            <input type="email" id="contactEmail" placeholder="Your Email" required>
+            <textarea id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Admin Log Modal -->
+    <div id="adminLogModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('adminLogModal')">&times;</span>
+            <h2>Admin Log Access</h2>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="accessAdminLog()">View Log</button>
+            <textarea id="adminLogOutput" rows="10" readonly style="display: none;"></textarea>
+            <button id="adminDownloadBtn" style="display: none;" onclick="downloadAdminLog()">Download Log</button>
         </div>
     </div>
 
@@ -164,7 +356,11 @@
             <span class="close" onclick="closeModal('textToPdfModal')">&times;</span>
             <h2>Text to PDF</h2>
             <textarea id="textInput" rows="10" placeholder="Enter text to convert to PDF"></textarea>
-            <button onclick="convertTextToPdf()">Convert to PDF</button>
+            <select id="textToPdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="textToPdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="textToPdfPreviewOutput"></div>
+            <button onclick="previewTextToPdf()">Preview</button>
+            <button id="textToPdfDownload" style="display: none;" onclick="downloadTextToPdf()">Download PDF</button>
         </div>
     </div>
 
@@ -174,21 +370,281 @@
             <span class="close" onclick="closeModal('pdfToTextModal')">&times;</span>
             <h2>PDF to Text</h2>
             <input type="file" id="pdfInput" accept=".pdf">
+            <div class="file-preview" id="pdfInputPreview"></div>
+            <div class="progress-bar" id="pdfToTextProgress"><div class="progress"></div></div>
             <button onclick="convertPdfToText()">Extract Text</button>
             <textarea id="textOutput" rows="10" readonly></textarea>
+        </div>
+    </div>
+
+    <!-- Merge PDFs Modal -->
+    <div id="mergePdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('mergePdfModal')">&times;</span>
+            <h2>Merge PDFs</h2>
+            <input type="file" id="mergePdfInput" accept=".pdf" multiple>
+            <div class="file-preview" id="mergePdfPreview"></div>
+            <select id="mergePdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="mergePdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="mergePdfPreviewOutput"></div>
+            <button onclick="previewMergePdfs()">Preview</button>
+            <button id="mergePdfDownload" style="display: none;" onclick="downloadMergePdfs()">Download PDF</button>
+        </div>
+    </div>
+
+    <!-- Organize PDF Modal -->
+    <div id="organizePdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('organizePdfModal')">&times;</span>
+            <h2>Organize PDF</h2>
+            <input type="file" id="organizePdfInput" accept=".pdf">
+            <div class="file-preview" id="organizePdfPreview"></div>
+            <div class="page-preview" id="pagePreview"></div>
+            <select id="organizePdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="organizePdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="organizePdfPreviewOutput"></div>
+            <button onclick="previewOrganizePdf()">Preview</button>
+            <button id="organizePdfDownload" style="display: none;" onclick="downloadOrganizePdf()">Download PDF</button>
+        </div>
+    </div>
+
+    <!-- Optimize PDF Modal -->
+    <div id="optimizePdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('optimizePdfModal')">&times;</span>
+            <h2>Optimize PDF</h2>
+            <input type="file" id="optimizePdfInput" accept=".pdf">
+            <div class="file-preview" id="optimizePdfPreview"></div>
+            <select id="optimizePdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="optimizePdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="optimizePdfPreviewOutput"></div>
+            <button onclick="previewOptimizePdf()">Preview</button>
+            <button id="optimizePdfDownload" style="display: none;" onclick="downloadOptimizePdf()">Download PDF</button>
+        </div>
+    </div>
+
+    <!-- Convert PDF Modal -->
+    <div id="convertPdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('convertPdfModal')">&times;</span>
+            <h2>Convert PDF to Image</h2>
+            <input type="file" id="convertPdfInput" accept=".pdf">
+            <div class="file-preview" id="convertPdfPreview"></div>
+            <div class="page-selection" id="pageSelection"></div>
+            <select id="convertPdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="convertPdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="convertPdfPreviewOutput"></div>
+            <button onclick="previewConvertPdf()">Preview</button>
+            <button id="convertPdfDownload" style="display: none;" onclick="downloadConvertPdf()">Download Images</button>
+        </div>
+    </div>
+
+    <!-- Edit PDF Modal -->
+    <div id="editPdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editPdfModal')">&times;</span>
+            <h2>Edit PDF (Add Text or Shape)</h2>
+            <input type="file" id="editPdfInput" accept=".pdf">
+            <div class="file-preview" id="editPdfPreview"></div>
+            <input type="text" id="editTextInput" placeholder="Enter text to add (optional)">
+            <label><input type="checkbox" id="addRectangle"> Add Rectangle</label>
+            <select id="editPdfPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="editPdfProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="editPdfPreviewOutput"></div>
+            <button onclick="previewEditPdf()">Preview</button>
+            <button id="editPdfDownload" style="display: none;" onclick="downloadEditPdf()">Download PDF</button>
+        </div>
+    </div>
+
+    <!-- PDF Security Modal -->
+    <div id="pdfSecurityModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('pdfSecurityModal')">&times;</span>
+            <h2>PDF Security (Password Protection)</h2>
+            <input type="file" id="securePdfInput" accept=".pdf">
+            <div class="file-preview" id="securePdfPreview"></div>
+            <input type="password" id="passwordInput" placeholder="Enter password">
+            <select id="pdfSecurityPageSelect" style="display: none;"></select>
+            <div class="progress-bar" id="pdfSecurityProgress"><div class="progress"></div></div>
+            <div class="output-preview" id="pdfSecurityPreviewOutput"></div>
+            <button onclick="previewSecurePdf()">Preview</button>
+            <button id="pdfSecurityDownload" style="display: none;" onclick="downloadSecurePdf()">Download PDF</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
+        let fileLog = [];
+        try {
+            fileLog = JSON.parse(localStorage.getItem('fileLog')) || [];
+        } catch (e) {
+            console.error('Failed to parse fileLog from localStorage:', e);
+            fileLog = [];
+        }
+        let previewData = {};
+        let clickCount = 0;
+        let clickTimeout;
+
+        function handleHeaderClick() {
+            clickCount++;
+            if (clickCount === 3) {
+                const adminBtn = document.getElementById('adminBtn');
+                adminBtn.classList.toggle('visible');
+                clickCount = 0;
+            }
+            clearTimeout(clickTimeout);
+            clickTimeout = setTimeout(() => clickCount = 0, 1000);
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`${sectionId}Btn`).classList.add('active');
+        }
+
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            resetProgress(modalId);
+            if (modalId !== 'adminLogModal') {
+                document.getElementById(`${modalId}PreviewOutput`).innerHTML = '';
+                document.getElementById(`${modalId}Download`).style.display = 'none';
+                const pageSelect = document.getElementById(`${modalId}PageSelect`);
+                if (pageSelect) pageSelect.style.display = 'none';
+            }
         }
+
+        function showProgress(modalId, percentage) {
+            const progressBar = document.getElementById(`${modalId}Progress`);
+            const progress = progressBar.querySelector('.progress');
+            progressBar.style.display = 'block';
+            progress.style.width = `${percentage}%`;
+        }
+
+        function resetProgress(modalId) {
+            const progressBar = document.getElementById(`${modalId}Progress`);
+            const progress = progressBar.querySelector('.progress');
+            progressBar.style.display = 'none';
+            progress.style.width = '0%';
+        }
+
+        function logFile(file, operation) {
+            const logEntry = {
+                name: file.name,
+                size: file.size,
+                timestamp: new Date().toISOString(),
+                operation
+            };
+            fileLog.push(logEntry);
+            localStorage.setItem('fileLog', JSON.stringify(fileLog));
+        }
+
+        function logContactSubmission(name, email, message) {
+            const logEntry = {
+                type: 'contact',
+                name,
+                email,
+                message,
+                timestamp: new Date().toISOString()
+            };
+            fileLog.push(logEntry);
+            localStorage.setItem('fileLog', JSON.stringify(fileLog));
+        }
+
+        function accessAdminLog() {
+            const password = document.getElementById('adminPassword').value;
+            if (password !== 'admin123') {
+                alert('Incorrect password!');
+                return;
+            }
+            const logOutput = document.getElementById('adminLogOutput');
+            logOutput.style.display = 'block';
+            logOutput.value = JSON.stringify(fileLog, null, 2);
+            document.getElementById('adminDownloadBtn').style.display = 'inline-block';
+        }
+
+        function downloadAdminLog() {
+            const logData = JSON.stringify(fileLog, null, 2);
+            const blob = new Blob([logData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'file_upload_log.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function updateFilePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            preview.textContent = Array.from(input.files).map(f => f.name).join(', ') || '';
+        }
+
+        async function renderPdfPreview(pdfBytes, previewId, pageNum) {
+            try {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                const pdf = await pdfjsLib.getDocument(pdfBytes).promise;
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 0.5 });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const context = canvas.getContext('2d');
+                await page.render({ canvasContext: context, viewport }).promise;
+                const previewDiv = document.getElementById(previewId);
+                previewDiv.innerHTML = '';
+                previewDiv.appendChild(canvas);
+            } catch (e) {
+                console.error('Error rendering PDF preview:', e);
+                alert('Failed to render PDF preview.');
+            }
+        }
+
+        async function updatePageSelect(modalId, numPages) {
+            const pageSelect = document.getElementById(`${modalId}PageSelect`);
+            pageSelect.innerHTML = '';
+            for (let i = 1; i <= numPages; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Page ${i}`;
+                pageSelect.appendChild(option);
+            }
+            pageSelect.style.display = 'block';
+        }
+
+        ['pdfInput', 'mergePdfInput', 'organizePdfInput', 'optimizePdfInput', 'convertPdfInput', 'editPdfInput', 'securePdfInput'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('change', () => {
+                    updateFilePreview(id, `${id}Preview`);
+                    if (id === 'convertPdfInput') updatePageSelection();
+                    if (id === 'organizePdfInput') displayPagePreviews();
+                });
+            }
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            if (name && email && message) {
+                logContactSubmission(name, email, message);
+                alert('Thank you for your submission!');
+                document.getElementById('contactForm').reset();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        });
 
         async function convertTextToPdf() {
             const text = document.getElementById('textInput').value;
@@ -196,28 +652,40 @@
                 alert('Please enter some text!');
                 return;
             }
-            // How would you customize the PDF's appearance (e.g., font, size)?
-            const { PDFDocument } = PDFLib;
-            const pdfDoc = await PDFDocument.create();
-            const page = pdfDoc.addPage([595, 842]); // A4 size
-            const { height } = page.getSize();
-            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-            page.drawText(text, {
-                x: 50,
-                y: height - 100,
-                size: 12,
-                font,
-                color: PDFLib.rgb(0, 0, 0),
-            });
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'output.pdf';
-            a.click();
-            URL.revokeObjectURL(url);
-            closeModal('textToPdfModal');
+            showProgress('textToPdf', 10);
+            try {
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([595, 842]);
+                const { height } = page.getSize();
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                page.drawText(text, { x: 50, y: height - 100, size: 12, font, color: PDFLib.rgb(0, 0, 0) });
+                const pdfBytes = await pdfDoc.save();
+                showProgress('textToPdf', 50);
+                previewData.textToPdf = pdfBytes;
+                await updatePageSelect('textToPdf', 1);
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error converting text to PDF:', e);
+                alert('Failed to convert text to PDF.');
+            }
+        }
+
+        async function previewTextToPdf() {
+            const pdfBytes = await convertTextToPdf();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('textToPdfPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'textToPdfPreviewOutput', pageNum);
+                showProgress('textToPdf', 100);
+                document.getElementById('textToPdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadTextToPdf() {
+            if (previewData.textToPdf) {
+                downloadFile(previewData.textToPdf, 'output.pdf');
+                closeModal('textToPdfModal');
+            }
         }
 
         async function convertPdfToText() {
@@ -227,24 +695,451 @@
                 alert('Please upload a PDF file!');
                 return;
             }
-            // How would you handle large PDFs or error cases?
+            logFile(file, 'PDF to Text');
+            showProgress('pdfToText', 10);
             const reader = new FileReader();
             reader.onload = async function () {
-                const typedArray = new Uint8Array(reader.result);
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-                const pdf = await pdfjsLib.getDocument(typedArray).promise;
-                let text = '';
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    text += content.items.map(item => item.str).join(' ') + '\n';
+                try {
+                    const typedArray = new Uint8Array(reader.result);
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                    const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                    let text = '';
+                    showProgress('pdfToText', 30);
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        text += content.items.map(item => item.str).join(' ') + '\n';
+                        showProgress('pdfToText', 30 + (i / pdf.numPages) * 60);
+                    }
+                    document.getElementById('textOutput').value = text;
+                    showProgress('pdfToText', 100);
+                } catch (e) {
+                    console.error('Error converting PDF to text:', e);
+                    alert('Failed to extract text from PDF.');
                 }
-                document.getElementById('textOutput').value = text;
             };
             reader.readAsArrayBuffer(file);
         }
 
-        // What additional JavaScript functions would you need for features like PDF Security or Workflows?
+        async function mergePdfs() {
+            const fileInput = document.getElementById('mergePdfInput');
+            const files = fileInput.files;
+            if (files.length < 2) {
+                alert('Please upload at least two PDF files!');
+                return;
+            }
+            Array.from(files).forEach(file => logFile(file, 'Merge PDFs'));
+            showProgress('mergePdf', 10);
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+                let totalPages = 0;
+                for (let i = 0; i < files.length; i++) {
+                    const arrayBuffer = await files[i].arrayBuffer();
+                    const pdf = await PDFDocument.load(arrayBuffer);
+                    totalPages += pdf.getPageCount();
+                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                    showProgress('mergePdf', 10 + (i + 1) / files.length * 80);
+                }
+                const pdfBytes = await mergedPdf.save();
+                showProgress('mergePdf', 50);
+                previewData.mergePdf = pdfBytes;
+                await updatePageSelect('mergePdf', totalPages);
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error merging PDFs:', e);
+                alert('Failed to merge PDFs.');
+            }
+        }
+
+        async function previewMergePdfs() {
+            const pdfBytes = await mergePdfs();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('mergePdfPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'mergePdfPreviewOutput', pageNum);
+                showProgress('mergePdf', 100);
+                document.getElementById('mergePdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadMergePdfs() {
+            if (previewData.mergePdf) {
+                downloadFile(previewData.mergePdf, 'merged.pdf');
+                closeModal('mergePdfModal');
+            }
+        }
+
+        async function displayPagePreviews() {
+            const fileInput = document.getElementById('organizePdfInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+            logFile(file, 'Organize PDF');
+            showProgress('organizePdf', 10);
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pagePreview = document.getElementById('pagePreview');
+                pagePreview.innerHTML = '';
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                showProgress('organizePdf', 30);
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 0.2 });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    canvas.dataset.page = i - 1;
+                    canvas.draggable = true;
+                    canvas.ondragstart = dragStart;
+                    canvas.ondragover = dragOver;
+                    canvas.ondrop = drop;
+                    const context = canvas.getContext('2d');
+                    await page.render({ canvasContext: context, viewport }).promise;
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.onclick = () => {
+                        canvas.remove();
+                        deleteBtn.remove();
+                    };
+                    pagePreview.appendChild(canvas);
+                    pagePreview.appendChild(deleteBtn);
+                }
+                showProgress('organizePdf', 70);
+                await updatePageSelect('organizePdf', pdf.numPages);
+            } catch (e) {
+                console.error('Error displaying page previews:', e);
+                alert('Failed to display page previews.');
+            }
+        }
+
+        function dragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.page);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const draggedPage = e.dataTransfer.getData('text');
+            const targetPage = e.target.dataset.page;
+            const pagePreview = document.getElementById('pagePreview');
+            const canvases = Array.from(pagePreview.querySelectorAll('canvas'));
+            const draggedCanvas = canvases.find(c => c.dataset.page === draggedPage);
+            const targetCanvas = canvases.find(c => c.dataset.page === targetPage);
+            if (draggedCanvas && targetCanvas && draggedCanvas !== targetCanvas) {
+                const draggedIndex = canvases.indexOf(draggedCanvas);
+                const targetIndex = canvases.indexOf(targetCanvas);
+                const nextSibling = targetIndex < canvases.length - 1 ? canvases[targetIndex + 1] : null;
+                pagePreview.insertBefore(draggedCanvas, targetCanvas);
+                pagePreview.insertBefore(draggedCanvas.nextSibling, targetCanvas);
+                if (nextSibling) {
+                    pagePreview.insertBefore(targetCanvas, nextSibling);
+                    pagePreview.insertBefore(targetCanvas.nextSibling, nextSibling);
+                } else {
+                    pagePreview.appendChild(targetCanvas);
+                    pagePreview.appendChild(targetCanvas.nextSibling);
+                }
+            }
+        }
+
+        async function organizePdf() {
+            const fileInput = document.getElementById('organizePdfInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please upload a PDF file!');
+                return;
+            }
+            showProgress('organizePdf', 80);
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+                const newPdf = await PDFDocument.create();
+                const canvases = document.getElementById('pagePreview').querySelectorAll('canvas');
+                for (let canvas of canvases) {
+                    const pageIdx = parseInt(canvas.dataset.page);
+                    const [page] = await newPdf.copyPages(pdfDoc, [pageIdx]);
+                    newPdf.addPage(page);
+                }
+                const pdfBytes = await newPdf.save();
+                showProgress('organizePdf', 50);
+                previewData.organizePdf = pdfBytes;
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error organizing PDF:', e);
+                alert('Failed to organize PDF.');
+            }
+        }
+
+        async function previewOrganizePdf() {
+            const pdfBytes = await organizePdf();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('organizePdfPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'organizePdfPreviewOutput', pageNum);
+                showProgress('organizePdf', 100);
+                document.getElementById('organizePdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadOrganizePdf() {
+            if (previewData.organizePdf) {
+                downloadFile(previewData.organizePdf, 'organized.pdf');
+                closeModal('organizePdfModal');
+            }
+        }
+
+        async function optimizePdf() {
+            const fileInput = document.getElementById('optimizePdfInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please upload a PDF file!');
+                return;
+            }
+            logFile(file, 'Optimize PDF');
+            showProgress('optimizePdf', 10);
+            try {
+                const { PDFDocument } = PDFLib;
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+                pdfDoc.removeDocumentInfo();
+                showProgress('optimizePdf', 50);
+                const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+                previewData.optimizePdf = pdfBytes;
+                await updatePageSelect('optimizePdf', pdfDoc.getPageCount());
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error optimizing PDF:', e);
+                alert('Failed to optimize PDF.');
+            }
+        }
+
+        async function previewOptimizePdf() {
+            const pdfBytes = await optimizePdf();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('optimizePdfPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'optimizePdfPreviewOutput', pageNum);
+                showProgress('optimizePdf', 100);
+                document.getElementById('optimizePdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadOptimizePdf() {
+            if (previewData.optimizePdf) {
+                downloadFile(previewData.optimizePdf, 'optimized.pdf');
+                closeModal('optimizePdfModal');
+            }
+        }
+
+        async function updatePageSelection() {
+            const fileInput = document.getElementById('convertPdfInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+            try {
+                const pageSelection = document.getElementById('pageSelection');
+                pageSelection.innerHTML = '';
+                const arrayBuffer = await file.arrayBuffer();
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" value="${i}" checked> Page ${i}`;
+                    pageSelection.appendChild(label);
+                }
+                await updatePageSelect('convertPdf', pdf.numPages);
+            } catch (e) {
+                console.error('Error updating page selection:', e);
+                alert('Failed to load page selection.');
+            }
+        }
+
+        async function convertPdfToImage() {
+            const fileInput = document.getElementById('convertPdfInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please upload a PDF file!');
+                return;
+            }
+            logFile(file, 'Convert PDF to Image');
+            showProgress('convertPdf', 10);
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                const selectedPages = Array.from(document.getElementById('pageSelection').querySelectorAll('input:checked')).map(input => parseInt(input.value));
+                if (selectedPages.length === 0) {
+                    alert('Please select at least one page!');
+                    return;
+                }
+                previewData.convertPdf = [];
+                for (let i = 0; i < selectedPages.length; i++) {
+                    const pageNum = selectedPages[i];
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1 });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    const context = canvas.getContext('2d');
+                    await page.render({ canvasContext: context, viewport }).promise;
+                    const imgData = canvas.toDataURL('image/png');
+                    previewData.convertPdf.push({ pageNum, imgData });
+                    showProgress('convertPdf', 30 + (i + 1) / selectedPages.length * 60);
+                }
+                return previewData.convertPdf;
+            } catch (e) {
+                console.error('Error converting PDF to image:', e);
+                alert('Failed to convert PDF to image.');
+            }
+        }
+
+        async function previewConvertPdf() {
+            const images = await convertPdfToImage();
+            if (images) {
+                const pageNum = parseInt(document.getElementById('convertPdfPageSelect').value);
+                const previewDiv = document.getElementById('convertPdfPreviewOutput');
+                previewDiv.innerHTML = '';
+                const imgData = images.find(img => img.pageNum === pageNum)?.imgData;
+                if (imgData) {
+                    const img = document.createElement('img');
+                    img.src = imgData;
+                    previewDiv.appendChild(img);
+                }
+                showProgress('convertPdf', 100);
+                document.getElementById('convertPdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadConvertPdf() {
+            if (previewData.convertPdf) {
+                previewData.convertPdf.forEach(img => {
+                    const a = document.createElement('a');
+                    a.href = img.imgData;
+                    a.download = `page${img.pageNum}.png`;
+                    a.click();
+                });
+                closeModal('convertPdfModal');
+            }
+        }
+
+        async function editPdf() {
+            const fileInput = document.getElementById('editPdfInput');
+            const file = fileInput.files[0];
+            const text = document.getElementById('editTextInput').value;
+            const addRectangle = document.getElementById('addRectangle').checked;
+            if (!file) {
+                alert('Please upload a PDF file!');
+                return;
+            }
+            if (!text && !addRectangle) {
+                alert('Please enter text or select to add a rectangle!');
+                return;
+            }
+            logFile(file, 'Edit PDF');
+            showProgress('editPdf', 10);
+            try {
+                const { PDFDocument } = PDFLib;
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+                const page = pdfDoc.getPage(0);
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                if (text) {
+                    page.drawText(text, { x: 50, y: 50, size: 12, font, color: PDFLib.rgb(1, 0, 0) });
+                }
+                if (addRectangle) {
+                    page.drawRectangle({ x: 100, y: 100, width: 100, height: 50, borderColor: PDFLib.rgb(0, 0, 1), borderWidth: 2 });
+                }
+                showProgress('editPdf', 50);
+                const pdfBytes = await pdfDoc.save();
+                previewData.editPdf = pdfBytes;
+                await updatePageSelect('editPdf', pdfDoc.getPageCount());
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error editing PDF:', e);
+                alert('Failed to edit PDF.');
+            }
+        }
+
+        async function previewEditPdf() {
+            const pdfBytes = await editPdf();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('editPdfPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'editPdfPreviewOutput', pageNum);
+                showProgress('editPdf', 100);
+                document.getElementById('editPdfDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadEditPdf() {
+            if (previewData.editPdf) {
+                downloadFile(previewData.editPdf, 'edited.pdf');
+                closeModal('editPdfModal');
+            }
+        }
+
+        async function securePdf() {
+            const fileInput = document.getElementById('securePdfInput');
+            const file = fileInput.files[0];
+            const password = document.getElementById('passwordInput').value;
+            if (!file) {
+                alert('Please upload a PDF file!');
+                return;
+            }
+            if (!password) {
+                alert('Please enter a password!');
+                return;
+            }
+            logFile(file, 'Secure PDF');
+            showProgress('pdfSecurity', 10);
+            try {
+                const { PDFDocument } = PDFLib;
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+                pdfDoc.setUserPassword(password);
+                pdfDoc.setPermissions({ modifying: false, annotating: false, printing: 'lowResolution' });
+                showProgress('pdfSecurity', 50);
+                const pdfBytes = await pdfDoc.save();
+                previewData.pdfSecurity = pdfBytes;
+                await updatePageSelect('pdfSecurity', pdfDoc.getPageCount());
+                return pdfBytes;
+            } catch (e) {
+                console.error('Error securing PDF:', e);
+                alert('Failed to secure PDF.');
+            }
+        }
+
+        async function previewSecurePdf() {
+            const pdfBytes = await securePdf();
+            if (pdfBytes) {
+                const pageNum = parseInt(document.getElementById('pdfSecurityPageSelect').value) || 1;
+                await renderPdfPreview(pdfBytes, 'pdfSecurityPreviewOutput', pageNum);
+                showProgress('pdfSecurity', 100);
+                document.getElementById('pdfSecurityDownload').style.display = 'inline-block';
+            }
+        }
+
+        function downloadSecurePdf() {
+            if (previewData.pdfSecurity) {
+                downloadFile(previewData.pdfSecurity, 'protected.pdf');
+                closeModal('pdfSecurityModal');
+            }
+        }
+
+        function downloadFile(data, fileName) {
+            try {
+                const blob = new Blob([data], { type: fileName.endsWith('.pdf') ? 'application/pdf' : 'image/png' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('Error downloading file:', e);
+                alert('Failed to download file.');
+            }
+        }
     </script>
 </body>
 </html>
