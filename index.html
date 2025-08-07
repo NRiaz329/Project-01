@@ -43,65 +43,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Editor - Free Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f7fa;
+            background-color: #ECEFF1;
+            color: #2D3748;
         }
         header {
-            background: linear-gradient(90deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, #FF6F61, #26A69A);
             color: white;
             text-align: center;
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 700;
             cursor: pointer;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
         header p {
             margin: 0.5rem 0;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: 400;
         }
         #adminBtn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             opacity: 0;
-            padding: 0.5rem 1rem;
-            background: #ff4444;
+            padding: 0.6rem 1.2rem;
+            background: #D81B60;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.2s;
         }
         #adminBtn.visible {
             opacity: 1;
+            transform: scale(1.05);
+        }
+        #adminBtn:hover {
+            background: #AD1457;
         }
         nav {
-            background: #333;
+            background: #2D3748;
             padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
         }
         nav button {
-            background: #007bff;
-            color: white;
+            background: #FFCA28;
+            color: #2D3748;
             border: none;
-            padding: 0.8rem 1.5rem;
-            margin: 0 0.5rem;
-            border-radius: 5px;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
         }
         nav button:hover {
-            background: #0056b3;
+            background: #FFB300;
+            transform: scale(1.05);
         }
         nav button.active {
-            background: #0056b3;
-            font-weight: bold;
+            background: #26A69A;
+            color: white;
+            transform: scale(1.05);
         }
         .section {
             display: none;
@@ -114,50 +130,83 @@
         }
         .home, .contact {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
             text-align: center;
         }
         .home h2, .contact h2 {
-            color: #333;
+            color: #2D3748;
+            font-weight: 700;
             margin-top: 0;
         }
         .contact form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.2rem;
             max-width: 500px;
             margin: 0 auto;
         }
         .contact input, .contact textarea {
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 0.9rem;
+            border: 2px solid #CFD8DC;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .contact input:focus, .contact textarea:focus {
+            border-color: #26A69A;
+            outline: none;
+        }
+        .contact button {
+            background: #AB47BC;
+            color: white;
+            padding: 0.9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .contact button:hover {
+            background: #8E24AA;
+            transform: scale(1.05);
         }
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             padding: 2rem;
         }
         .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #FF6F61, #FF8A80);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            padding: 1.5rem;
+            padding: 1.8rem;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
+        .card:nth-child(2) { background: linear-gradient(135deg, #26A69A, #4DD0E1); }
+        .card:nth-child(3) { background: linear-gradient(135deg, #FFCA28, #FFD54F); }
+        .card:nth-child(4) { background: linear-gradient(135deg, #AB47BC, #CE93D8); }
+        .card:nth-child(5) { background: linear-gradient(135deg, #FF6F61, #FF8A80); }
+        .card:nth-child(6) { background: linear-gradient(135deg, #26A69A, #4DD0E1); }
+        .card:nth-child(7) { background: linear-gradient(135deg, #FFCA28, #FFD54F); }
+        .card:nth-child(8) { background: linear-gradient(135deg, #AB47BC, #CE93D8); }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         .card h3 {
-            margin: 0;
-            color: #333;
-            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         .modal {
             display: none;
@@ -166,119 +215,217 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal-content {
             background: white;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
             position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-        .modal-content textarea, .modal-content input, .modal-content select {
+        .modal-content h2 {
+            color: #2D3748;
+            font-weight: 700;
+        }
+        .modal-content textarea, .modal-content input[type="text"], .modal-content input[type="password"], .modal-content select {
             width: 100%;
             margin: 1rem 0;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 0.9rem;
+            border: 2px solid #CFD8DC;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .modal-content textarea:focus, .modal-content input[type="text"]:focus, .modal-content input[type="password"]:focus, .modal-content select:focus {
+            border-color: #26A69A;
+            outline: none;
         }
         .modal-content select {
-            background: #007bff;
+            background: #AB47BC;
             color: white;
             padding-right: 2rem;
             cursor: pointer;
         }
-        .modal-content select:focus {
-            outline: none;
-            border-color: #0056b3;
-        }
         .modal-content button {
-            background: #007bff;
+            background: #26A69A;
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
+            padding: 0.9rem 1.8rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
             margin: 0.5rem;
         }
         .modal-content button:hover {
-            background: #0056b3;
+            background: #00897B;
+            transform: scale(1.05);
         }
         .close {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.8rem;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: #2D3748;
             cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close:hover {
+            color: #FF6F61;
         }
         .progress-bar {
             display: none;
             width: 100%;
-            height: 8px;
-            background: #ddd;
-            border-radius: 4px;
+            height: 10px;
+            background: #CFD8DC;
+            border-radius: 5px;
             overflow: hidden;
             margin: 1rem 0;
         }
         .progress {
             width: 0;
             height: 100%;
-            background: #007bff;
-            transition: width 0.1s;
+            background: #FFCA28;
+            transition: width 0.3s ease;
         }
         .file-preview {
             margin: 1rem 0;
             font-size: 0.9rem;
-            color: #555;
+            color: #4B5EAA;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .file-preview button {
+            background: #D81B60;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        .file-preview button:hover {
+            background: #AD1457;
         }
         .page-preview {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            max-height: 200px;
+            gap: 12px;
+            max-height: 220px;
             overflow-y: auto;
         }
         .page-preview canvas {
-            border: 1px solid #ddd;
+            border: 2px solid #CFD8DC;
+            border-radius: 8px;
             cursor: move;
+            transition: border-color 0.3s;
+        }
+        .page-preview canvas:hover {
+            border-color: #26A69A;
         }
         .page-selection {
             margin: 1rem 0;
-            max-height: 100px;
+            max-height: 120px;
             overflow-y: auto;
         }
         .output-preview {
             margin: 1rem 0;
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
             text-align: center;
         }
         .output-preview img, .output-preview canvas {
             max-width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 2px solid #CFD8DC;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        @media (max-width: 600px) {
+        .file-drop-zone {
+            border: 2px dashed #26A69A;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            background: #F7FAFC;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        .file-drop-zone.dragover {
+            border-color: #FFCA28;
+            background: #E6FFFA;
+        }
+        .file-drop-zone p {
+            margin: 0;
+            color: #4B5EAA;
+            font-size: 1rem;
+        }
+        .file-drop-zone input[type="file"] {
+            display: none;
+        }
+        .modal-content .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .modal-content .options label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .modal-content .options input[type="range"] {
+            width: 100px;
+        }
+        .modal-content .reset-btn {
+            background: #D81B60;
+        }
+        .modal-content .reset-btn:hover {
+            background: #AD1457;
+        }
+        @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
             }
             .modal-content {
                 width: 95%;
+                padding: 1.5rem;
+            }
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
             }
             nav button {
-                margin: 0.2rem;
-                padding: 0.6rem 1rem;
+                padding: 0.7rem 1.2rem;
             }
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             header p {
-                font-size: 1rem;
+                font-size: 1.1rem;
+            }
+            .card {
+                padding: 1.2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            header {
+                padding: 2rem 0.8rem;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+            header p {
+                font-size: 0.9rem;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+            .modal-content button {
+                padding: 0.7rem 1.2rem;
             }
         }
     </style>
@@ -290,39 +437,47 @@
         <button id="adminBtn" onclick="openModal('adminLogModal')">Admin Access</button>
     </header>
     <nav>
-        <button id="homeBtn" class="active" onclick="showSection('home')">Home</button>
-        <button id="toolsBtn" onclick="showSection('tools')">Tools</button>
-        <button id="contactBtn" onclick="showSection('contact')">Contact</button>
+        <button id="homeBtn" class="active" onclick="showSection('home')"><i class="fas fa-home"></i> Home</button>
+        <button id="toolsBtn" onclick="showSection('tools')"><i class="fas fa-tools"></i> Tools</button>
+        <button id="contactBtn" onclick="showSection('contact')"><i class="fas fa-envelope"></i> Contact</button>
     </nav>
     <div id="home" class="section home active">
         <h2>Welcome to PDF Editor</h2>
         <p>Transform your PDFs with our free, easy-to-use tools. Convert, edit, merge, organize, optimize, or secure your documents in just a few clicks. Get started now!</p>
-        <button onclick="showSection('tools')" style="background: #007bff; color: white; padding: 0.8rem 1.5rem; border-radius: 5px;">Explore Tools</button>
+        <button onclick="showSection('tools')" style="background: #FFCA28; color: #2D3748; padding: 0.9rem 1.8rem; border-radius: 8px; font-weight: 600; transition: background 0.3s, transform 0.2s;"><i class="fas fa-rocket"></i> Explore Tools</button>
     </div>
     <div id="tools" class="section">
         <div class="container">
             <div class="card" onclick="openModal('textToPdfModal')">
+                <i class="fas fa-file-alt"></i>
                 <h3>Text to PDF</h3>
             </div>
             <div class="card" onclick="openModal('pdfToTextModal')">
+                <i class="fas fa-file-download"></i>
                 <h3>PDF to Text</h3>
             </div>
             <div class="card" onclick="openModal('mergePdfModal')">
+                <i class="fas fa-layer-group"></i>
                 <h3>Workflows (Merge)</h3>
             </div>
             <div class="card" onclick="openModal('organizePdfModal')">
+                <i class="fas fa-sort-amount-down"></i>
                 <h3>Organize PDF</h3>
             </div>
             <div class="card" onclick="openModal('optimizePdfModal')">
+                <i class="fas fa-compress-alt"></i>
                 <h3>Optimize PDF</h3>
             </div>
             <div class="card" onclick="openModal('convertPdfModal')">
+                <i class="fas fa-file-image"></i>
                 <h3>Convert PDF</h3>
             </div>
             <div class="card" onclick="openModal('editPdfModal')">
+                <i class="fas fa-edit"></i>
                 <h3>Edit PDF</h3>
             </div>
             <div class="card" onclick="openModal('pdfSecurityModal')">
+                <i class="fas fa-lock"></i>
                 <h3>PDF Security</h3>
             </div>
         </div>
@@ -334,7 +489,7 @@
             <input type="text" id="contactName" placeholder="Your Name" required>
             <input type="email" id="contactEmail" placeholder="Your Email" required>
             <textarea id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
-            <button type="submit">Submit</button>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Submit</button>
         </form>
     </div>
 
@@ -343,10 +498,11 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('adminLogModal')">&times;</span>
             <h2>Admin Log Access</h2>
-            <input type="password" id="adminPassword" placeholder="Enter admin password">
-            <button onclick="accessAdminLog()">View Log</button>
-            <textarea id="adminLogOutput" rows="10" readonly style="display: none;"></textarea>
-            <button id="adminDownloadBtn" style="display: none;" onclick="downloadAdminLog()">Download Log</button>
+            <input type="password" id="adminPassword" placeholder="Enter admin password" aria-label="Admin password">
+            <button onclick="accessAdminLog()"><i class="fas fa-key"></i> View Log</button>
+            <textarea id="adminLogOutput" rows="10" readonly style="display: none;" aria-label="Admin log output"></textarea>
+            <button id="adminDownloadBtn" style="display: none;" onclick="downloadAdminLog()"><i class="fas fa-download"></i> Download Log</button>
+            <button class="reset-btn" onclick="resetModal('adminLogModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -355,12 +511,23 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('textToPdfModal')">&times;</span>
             <h2>Text to PDF</h2>
-            <textarea id="textInput" rows="10" placeholder="Enter text to convert to PDF"></textarea>
-            <select id="textToPdfPageSelect" style="display: none;"></select>
+            <textarea id="textInput" rows="10" placeholder="Enter text to convert to PDF" aria-label="Text input"></textarea>
+            <div class="options">
+                <label>Font Size: <input type="range" id="textFontSize" min="8" max="24" value="12" aria-label="Font size"></label>
+                <label>Alignment: 
+                    <select id="textAlignment" aria-label="Text alignment">
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                    </select>
+                </label>
+            </div>
+            <select id="textToPdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="textToPdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="textToPdfPreviewOutput"></div>
-            <button onclick="previewTextToPdf()">Preview</button>
-            <button id="textToPdfDownload" style="display: none;" onclick="downloadTextToPdf()">Download PDF</button>
+            <button onclick="previewTextToPdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="textToPdfDownload" style="display: none;" onclick="downloadTextToPdf()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('textToPdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -369,11 +536,15 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('pdfToTextModal')">&times;</span>
             <h2>PDF to Text</h2>
-            <input type="file" id="pdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="pdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="pdfInput" accept=".pdf" aria-label="PDF file input">
+            </div>
             <div class="file-preview" id="pdfInputPreview"></div>
             <div class="progress-bar" id="pdfToTextProgress"><div class="progress"></div></div>
-            <button onclick="convertPdfToText()">Extract Text</button>
-            <textarea id="textOutput" rows="10" readonly></textarea>
+            <button onclick="convertPdfToText()"><i class="fas fa-file-download"></i> Extract Text</button>
+            <textarea id="textOutput" rows="10" readonly aria-label="Extracted text output"></textarea>
+            <button class="reset-btn" onclick="resetModal('pdfToTextModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -382,13 +553,20 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('mergePdfModal')">&times;</span>
             <h2>Merge PDFs</h2>
-            <input type="file" id="mergePdfInput" accept=".pdf" multiple>
+            <div class="file-drop-zone" id="mergePdfInputDropZone">
+                <p>Drag & drop PDF files here or click to select (multiple allowed)</p>
+                <input type="file" id="mergePdfInput" accept=".pdf" multiple aria-label="Merge PDF files input">
+            </div>
             <div class="file-preview" id="mergePdfPreview"></div>
-            <select id="mergePdfPageSelect" style="display: none;"></select>
+            <div class="options">
+                <label>Page Range: <input type="text" id="mergePageRange" placeholder="e.g., 1-3,5" aria-label="Page range"></label>
+            </div>
+            <select id="mergePdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="mergePdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="mergePdfPreviewOutput"></div>
-            <button onclick="previewMergePdfs()">Preview</button>
-            <button id="mergePdfDownload" style="display: none;" onclick="downloadMergePdfs()">Download PDF</button>
+            <button onclick="previewMergePdfs()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="mergePdfDownload" style="display: none;" onclick="downloadMergePdfs()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('mergePdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -397,14 +575,18 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('organizePdfModal')">&times;</span>
             <h2>Organize PDF</h2>
-            <input type="file" id="organizePdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="organizePdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="organizePdfInput" accept=".pdf" aria-label="Organize PDF file input">
+            </div>
             <div class="file-preview" id="organizePdfPreview"></div>
             <div class="page-preview" id="pagePreview"></div>
-            <select id="organizePdfPageSelect" style="display: none;"></select>
+            <select id="organizePdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="organizePdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="organizePdfPreviewOutput"></div>
-            <button onclick="previewOrganizePdf()">Preview</button>
-            <button id="organizePdfDownload" style="display: none;" onclick="downloadOrganizePdf()">Download PDF</button>
+            <button onclick="previewOrganizePdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="organizePdfDownload" style="display: none;" onclick="downloadOrganizePdf()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('organizePdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -413,13 +595,26 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('optimizePdfModal')">&times;</span>
             <h2>Optimize PDF</h2>
-            <input type="file" id="optimizePdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="optimizePdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="optimizePdfInput" accept=".pdf" aria-label="Optimize PDF file input">
+            </div>
             <div class="file-preview" id="optimizePdfPreview"></div>
-            <select id="optimizePdfPageSelect" style="display: none;"></select>
+            <div class="options">
+                <label>Compression: 
+                    <select id="compressionLevel" aria-label="Compression level">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </label>
+            </div>
+            <select id="optimizePdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="optimizePdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="optimizePdfPreviewOutput"></div>
-            <button onclick="previewOptimizePdf()">Preview</button>
-            <button id="optimizePdfDownload" style="display: none;" onclick="downloadOptimizePdf()">Download PDF</button>
+            <button onclick="previewOptimizePdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="optimizePdfDownload" style="display: none;" onclick="downloadOptimizePdf()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('optimizePdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -428,14 +623,26 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('convertPdfModal')">&times;</span>
             <h2>Convert PDF to Image</h2>
-            <input type="file" id="convertPdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="convertPdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="convertPdfInput" accept=".pdf" aria-label="Convert PDF file input">
+            </div>
             <div class="file-preview" id="convertPdfPreview"></div>
+            <div class="options">
+                <label>Format: 
+                    <select id="imageFormat" aria-label="Image format">
+                        <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                    </select>
+                </label>
+            </div>
             <div class="page-selection" id="pageSelection"></div>
-            <select id="convertPdfPageSelect" style="display: none;"></select>
+            <select id="convertPdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="convertPdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="convertPdfPreviewOutput"></div>
-            <button onclick="previewConvertPdf()">Preview</button>
-            <button id="convertPdfDownload" style="display: none;" onclick="downloadConvertPdf()">Download Images</button>
+            <button onclick="previewConvertPdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="convertPdfDownload" style="display: none;" onclick="downloadConvertPdf()"><i class="fas fa-download"></i> Download Images</button>
+            <button class="reset-btn" onclick="resetModal('convertPdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -444,15 +651,23 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('editPdfModal')">&times;</span>
             <h2>Edit PDF (Add Text or Shape)</h2>
-            <input type="file" id="editPdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="editPdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="editPdfInput" accept=".pdf" aria-label="Edit PDF file input">
+            </div>
             <div class="file-preview" id="editPdfPreview"></div>
-            <input type="text" id="editTextInput" placeholder="Enter text to add (optional)">
-            <label><input type="checkbox" id="addRectangle"> Add Rectangle</label>
-            <select id="editPdfPageSelect" style="display: none;"></select>
+            <input type="text" id="editTextInput" placeholder="Enter text to add (optional)" aria-label="Text to add">
+            <div class="options">
+                <label>X Position: <input type="range" id="textXPos" min="0" max="500" value="50" aria-label="Text X position"></label>
+                <label>Y Position: <input type="range" id="textYPos" min="0" max="700" value="50" aria-label="Text Y position"></label>
+                <label><input type="checkbox" id="addRectangle" aria-label="Add rectangle"> Add Rectangle</label>
+            </div>
+            <select id="editPdfPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="editPdfProgress"><div class="progress"></div></div>
             <div class="output-preview" id="editPdfPreviewOutput"></div>
-            <button onclick="previewEditPdf()">Preview</button>
-            <button id="editPdfDownload" style="display: none;" onclick="downloadEditPdf()">Download PDF</button>
+            <button onclick="previewEditPdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="editPdfDownload" style="display: none;" onclick="downloadEditPdf()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('editPdfModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
@@ -461,23 +676,35 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('pdfSecurityModal')">&times;</span>
             <h2>PDF Security (Password Protection)</h2>
-            <input type="file" id="securePdfInput" accept=".pdf">
+            <div class="file-drop-zone" id="securePdfInputDropZone">
+                <p>Drag & drop a PDF file here or click to select</p>
+                <input type="file" id="securePdfInput" accept=".pdf" aria-label="Secure PDF file input">
+            </div>
             <div class="file-preview" id="securePdfPreview"></div>
-            <input type="password" id="passwordInput" placeholder="Enter password">
-            <select id="pdfSecurityPageSelect" style="display: none;"></select>
+            <input type="password" id="passwordInput" placeholder="Enter password" aria-label="Password">
+            <select id="pdfSecurityPageSelect" style="display: none;" aria-label="Page selection"></select>
             <div class="progress-bar" id="pdfSecurityProgress"><div class="progress"></div></div>
             <div class="output-preview" id="pdfSecurityPreviewOutput"></div>
-            <button onclick="previewSecurePdf()">Preview</button>
-            <button id="pdfSecurityDownload" style="display: none;" onclick="downloadSecurePdf()">Download PDF</button>
+            <button onclick="previewSecurePdf()"><i class="fas fa-eye"></i> Preview</button>
+            <button id="pdfSecurityDownload" style="display: none;" onclick="downloadSecurePdf()"><i class="fas fa-download"></i> Download PDF</button>
+            <button class="reset-btn" onclick="resetModal('pdfSecurityModal')"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.mjs" type="module"></script>
+    <script type="module">
+        import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.worker.min.mjs';
+
         let fileLog = [];
+        const MAX_LOG_ENTRIES = 100;
         try {
             fileLog = JSON.parse(localStorage.getItem('fileLog')) || [];
+            if (fileLog.length > MAX_LOG_ENTRIES) {
+                fileLog = fileLog.slice(-MAX_LOG_ENTRIES);
+                localStorage.setItem('fileLog', JSON.stringify(fileLog));
+            }
         } catch (e) {
             console.error('Failed to parse fileLog from localStorage:', e);
             fileLog = [];
@@ -485,6 +712,7 @@
         let previewData = {};
         let clickCount = 0;
         let clickTimeout;
+        const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
         function handleHeaderClick() {
             clickCount++;
@@ -498,13 +726,9 @@
         }
 
         function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`${sectionId}Btn`).classList.add('active');
         }
 
@@ -527,7 +751,7 @@
             const progressBar = document.getElementById(`${modalId}Progress`);
             const progress = progressBar.querySelector('.progress');
             progressBar.style.display = 'block';
-            progress.style.width = `${percentage}%`;
+            progress.style.width = `${Math.min(percentage, 100)}%`;
         }
 
         function resetProgress(modalId) {
@@ -535,6 +759,28 @@
             const progress = progressBar.querySelector('.progress');
             progressBar.style.display = 'none';
             progress.style.width = '0%';
+        }
+
+        function resetModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
+            modal.querySelectorAll('textarea:not([readonly])').forEach(textarea => textarea.value = '');
+            modal.querySelectorAll('input[type="text"], input[type="password"]').forEach(input => input.value = '');
+            modal.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            modal.querySelectorAll('input[type="range"]').forEach(range => range.value = range.defaultValue);
+            modal.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+            modal.querySelectorAll('.file-preview').forEach(preview => preview.innerHTML = '');
+            modal.querySelectorAll('.page-preview').forEach(preview => preview.innerHTML = '');
+            modal.querySelectorAll('.output-preview').forEach(preview => preview.innerHTML = '');
+            modal.querySelectorAll('.progress-bar').forEach(bar => resetProgress(modalId));
+            const downloadBtn = modal.querySelector('[id$="Download"]');
+            if (downloadBtn) downloadBtn.style.display = 'none';
+            const pageSelect = modal.querySelector('[id$="PageSelect"]');
+            if (pageSelect) pageSelect.style.display = 'none';
+            if (modalId === 'adminLogModal') {
+                document.getElementById('adminLogOutput').style.display = 'none';
+                document.getElementById('adminDownloadBtn').style.display = 'none';
+            }
         }
 
         function logFile(file, operation) {
@@ -545,6 +791,7 @@
                 operation
             };
             fileLog.push(logEntry);
+            if (fileLog.length > MAX_LOG_ENTRIES) fileLog.shift();
             localStorage.setItem('fileLog', JSON.stringify(fileLog));
         }
 
@@ -557,6 +804,7 @@
                 timestamp: new Date().toISOString()
             };
             fileLog.push(logEntry);
+            if (fileLog.length > MAX_LOG_ENTRIES) fileLog.shift();
             localStorage.setItem('fileLog', JSON.stringify(fileLog));
         }
 
@@ -583,16 +831,64 @@
             URL.revokeObjectURL(url);
         }
 
+        function validateFile(file) {
+            if (!file.type.includes('pdf')) {
+                alert('Please upload a PDF file.');
+                return false;
+            }
+            if (file.size > MAX_FILE_SIZE) {
+                alert('File size exceeds 50MB limit.');
+                return false;
+            }
+            return true;
+        }
+
         function updateFilePreview(inputId, previewId) {
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
-            preview.textContent = Array.from(input.files).map(f => f.name).join(', ') || '';
+            preview.innerHTML = '';
+            Array.from(input.files).forEach(file => {
+                if (validateFile(file)) {
+                    const fileInfo = document.createElement('span');
+                    fileInfo.textContent = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                    const clearBtn = document.createElement('button');
+                    clearBtn.innerHTML = '<i class="fas fa-times"></i> Clear';
+                    clearBtn.onclick = () => {
+                        input.value = '';
+                        preview.innerHTML = '';
+                    };
+                    preview.appendChild(fileInfo);
+                    preview.appendChild(clearBtn);
+                } else {
+                    input.value = '';
+                }
+            });
+        }
+
+        function setupFileDropZone(inputId, dropZoneId) {
+            const input = document.getElementById(inputId);
+            const dropZone = document.getElementById(dropZoneId);
+            dropZone.addEventListener('click', () => input.click());
+            dropZone.addEventListener('dragover', e => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                input.files = e.dataTransfer.files;
+                updateFilePreview(inputId, `${inputId}Preview`);
+            });
+            input.addEventListener('change', () => updateFilePreview(inputId, `${inputId}Preview`));
         }
 
         async function renderPdfPreview(pdfBytes, previewId, pageNum) {
             try {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-                const pdf = await pdfjsLib.getDocument(pdfBytes).promise;
+                const pdf = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+                if (pageNum < 1 || pageNum > pdf.numPages) {
+                    throw new Error('Invalid page number');
+                }
                 const page = await pdf.getPage(pageNum);
                 const viewport = page.getViewport({ scale: 0.5 });
                 const canvas = document.createElement('canvas');
@@ -605,7 +901,7 @@
                 previewDiv.appendChild(canvas);
             } catch (e) {
                 console.error('Error rendering PDF preview:', e);
-                alert('Failed to render PDF preview.');
+                alert('Failed to render PDF preview. The file may be corrupted or password-protected.');
             }
         }
 
@@ -622,34 +918,40 @@
         }
 
         ['pdfInput', 'mergePdfInput', 'organizePdfInput', 'optimizePdfInput', 'convertPdfInput', 'editPdfInput', 'securePdfInput'].forEach(id => {
+            setupFileDropZone(id, `${id}DropZone`);
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('change', () => {
-                    updateFilePreview(id, `${id}Preview`);
                     if (id === 'convertPdfInput') updatePageSelection();
                     if (id === 'organizePdfInput') displayPagePreviews();
                 });
             }
         });
 
-        document.getElementById('contactForm').addEventListener('submit', (e) => {
+        document.getElementById('contactForm').addEventListener('submit', e => {
             e.preventDefault();
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const message = document.getElementById('contactMessage').value;
-            if (name && email && message) {
-                logContactSubmission(name, email, message);
-                alert('Thank you for your submission!');
-                document.getElementById('contactForm').reset();
-            } else {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
+            if (!name || !email || !message) {
                 alert('Please fill out all fields.');
+                return;
             }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            logContactSubmission(name, email, message);
+            alert('Thank you for your submission!');
+            document.getElementById('contactForm').reset();
         });
 
         async function convertTextToPdf() {
             const text = document.getElementById('textInput').value;
+            const fontSize = parseInt(document.getElementById('textFontSize').value);
+            const alignment = document.getElementById('textAlignment').value;
             if (!text) {
-                alert('Please enter some text!');
+                alert('Please enter some text.');
                 return;
             }
             showProgress('textToPdf', 10);
@@ -657,9 +959,12 @@
                 const { PDFDocument } = PDFLib;
                 const pdfDoc = await PDFDocument.create();
                 const page = pdfDoc.addPage([595, 842]);
-                const { height } = page.getSize();
+                const { width, height } = page.getSize();
                 const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-                page.drawText(text, { x: 50, y: height - 100, size: 12, font, color: PDFLib.rgb(0, 0, 0) });
+                let x = 50;
+                if (alignment === 'center') x = width / 2 - (font.widthOfTextAtSize(text, fontSize) / 2);
+                if (alignment === 'right') x = width - 50 - font.widthOfTextAtSize(text, fontSize);
+                page.drawText(text, { x, y: height - 100, size: fontSize, font, color: PDFLib.rgb(0, 0, 0) });
                 const pdfBytes = await pdfDoc.save();
                 showProgress('textToPdf', 50);
                 previewData.textToPdf = pdfBytes;
@@ -692,16 +997,16 @@
             const fileInput = document.getElementById('pdfInput');
             const file = fileInput.files[0];
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
                 return;
             }
+            if (!validateFile(file)) return;
             logFile(file, 'PDF to Text');
             showProgress('pdfToText', 10);
             const reader = new FileReader();
             reader.onload = async function () {
                 try {
                     const typedArray = new Uint8Array(reader.result);
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
                     const pdf = await pdfjsLib.getDocument(typedArray).promise;
                     let text = '';
                     showProgress('pdfToText', 30);
@@ -711,24 +1016,45 @@
                         text += content.items.map(item => item.str).join(' ') + '\n';
                         showProgress('pdfToText', 30 + (i / pdf.numPages) * 60);
                     }
-                    document.getElementById('textOutput').value = text;
+                    document.getElementById('textOutput').value = text || 'No text found (possibly a scanned PDF).';
                     showProgress('pdfToText', 100);
                 } catch (e) {
                     console.error('Error converting PDF to text:', e);
-                    alert('Failed to extract text from PDF.');
+                    alert('Failed to extract text. The PDF may be scanned or corrupted.');
                 }
             };
+            reader.onerror = () => alert('Error reading file.');
             reader.readAsArrayBuffer(file);
+        }
+
+        function parsePageRange(rangeStr, totalPages) {
+            if (!rangeStr) return Array.from({ length: totalPages }, (_, i) => i);
+            const pages = new Set();
+            rangeStr.split(',').forEach(part => {
+                const match = part.match(/^(\d+)(?:-(\d+))?$/);
+                if (match) {
+                    const start = parseInt(match[1]) - 1;
+                    const end = match[2] ? parseInt(match[2]) - 1 : start;
+                    for (let i = Math.max(0, start); i <= Math.min(totalPages - 1, end); i++) {
+                        pages.add(i);
+                    }
+                }
+            });
+            return Array.from(pages).sort((a, b) => a - b);
         }
 
         async function mergePdfs() {
             const fileInput = document.getElementById('mergePdfInput');
             const files = fileInput.files;
+            const pageRange = document.getElementById('mergePageRange').value;
             if (files.length < 2) {
-                alert('Please upload at least two PDF files!');
+                alert('Please upload at least two PDF files.');
                 return;
             }
-            Array.from(files).forEach(file => logFile(file, 'Merge PDFs'));
+            for (let file of files) {
+                if (!validateFile(file)) return;
+                logFile(file, 'Merge PDFs');
+            }
             showProgress('mergePdf', 10);
             try {
                 const { PDFDocument } = PDFLib;
@@ -737,19 +1063,20 @@
                 for (let i = 0; i < files.length; i++) {
                     const arrayBuffer = await files[i].arrayBuffer();
                     const pdf = await PDFDocument.load(arrayBuffer);
-                    totalPages += pdf.getPageCount();
-                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    const pageIndices = parsePageRange(pageRange, pdf.getPageCount());
+                    totalPages += pageIndices.length;
+                    const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
                     copiedPages.forEach(page => mergedPdf.addPage(page));
                     showProgress('mergePdf', 10 + (i + 1) / files.length * 80);
                 }
                 const pdfBytes = await mergedPdf.save();
-                showProgress('mergePdf', 50);
+                showProgress('mergePdf', 90);
                 previewData.mergePdf = pdfBytes;
                 await updatePageSelect('mergePdf', totalPages);
                 return pdfBytes;
             } catch (e) {
                 console.error('Error merging PDFs:', e);
-                alert('Failed to merge PDFs.');
+                alert('Failed to merge PDFs. Ensure files are valid and not password-protected.');
             }
         }
 
@@ -774,13 +1101,13 @@
             const fileInput = document.getElementById('organizePdfInput');
             const file = fileInput.files[0];
             if (!file) return;
+            if (!validateFile(file)) return;
             logFile(file, 'Organize PDF');
             showProgress('organizePdf', 10);
             try {
                 const arrayBuffer = await file.arrayBuffer();
                 const pagePreview = document.getElementById('pagePreview');
                 pagePreview.innerHTML = '';
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
                 const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                 showProgress('organizePdf', 30);
                 for (let i = 1; i <= pdf.numPages; i++) {
@@ -797,7 +1124,7 @@
                     const context = canvas.getContext('2d');
                     await page.render({ canvasContext: context, viewport }).promise;
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
                     deleteBtn.onclick = () => {
                         canvas.remove();
                         deleteBtn.remove();
@@ -809,7 +1136,7 @@
                 await updatePageSelect('organizePdf', pdf.numPages);
             } catch (e) {
                 console.error('Error displaying page previews:', e);
-                alert('Failed to display page previews.');
+                alert('Failed to display page previews. The file may be corrupted.');
             }
         }
 
@@ -849,7 +1176,13 @@
             const fileInput = document.getElementById('organizePdfInput');
             const file = fileInput.files[0];
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
+                return;
+            }
+            if (!validateFile(file)) return;
+            const canvases = document.getElementById('pagePreview').querySelectorAll('canvas');
+            if (!canvases.length) {
+                alert('No pages to organize.');
                 return;
             }
             showProgress('organizePdf', 80);
@@ -858,19 +1191,18 @@
                 const { PDFDocument } = PDFLib;
                 const pdfDoc = await PDFDocument.load(arrayBuffer);
                 const newPdf = await PDFDocument.create();
-                const canvases = document.getElementById('pagePreview').querySelectorAll('canvas');
                 for (let canvas of canvases) {
                     const pageIdx = parseInt(canvas.dataset.page);
                     const [page] = await newPdf.copyPages(pdfDoc, [pageIdx]);
                     newPdf.addPage(page);
                 }
                 const pdfBytes = await newPdf.save();
-                showProgress('organizePdf', 50);
+                showProgress('organizePdf', 90);
                 previewData.organizePdf = pdfBytes;
                 return pdfBytes;
             } catch (e) {
                 console.error('Error organizing PDF:', e);
-                alert('Failed to organize PDF.');
+                alert('Failed to organize PDF. The file may be corrupted.');
             }
         }
 
@@ -894,10 +1226,12 @@
         async function optimizePdf() {
             const fileInput = document.getElementById('optimizePdfInput');
             const file = fileInput.files[0];
+            const compressionLevel = document.getElementById('compressionLevel').value;
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
                 return;
             }
+            if (!validateFile(file)) return;
             logFile(file, 'Optimize PDF');
             showProgress('optimizePdf', 10);
             try {
@@ -906,13 +1240,16 @@
                 const pdfDoc = await PDFDocument.load(arrayBuffer);
                 pdfDoc.removeDocumentInfo();
                 showProgress('optimizePdf', 50);
-                const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+                const options = { useObjectStreams: true };
+                if (compressionLevel === 'high') options.linearize = true;
+                const pdfBytes = await pdfDoc.save(options);
                 previewData.optimizePdf = pdfBytes;
                 await updatePageSelect('optimizePdf', pdfDoc.getPageCount());
+                showProgress('optimizePdf', 90);
                 return pdfBytes;
             } catch (e) {
                 console.error('Error optimizing PDF:', e);
-                alert('Failed to optimize PDF.');
+                alert('Failed to optimize PDF. The file may be corrupted.');
             }
         }
 
@@ -937,40 +1274,45 @@
             const fileInput = document.getElementById('convertPdfInput');
             const file = fileInput.files[0];
             if (!file) return;
+            if (!validateFile(file)) return;
             try {
                 const pageSelection = document.getElementById('pageSelection');
                 pageSelection.innerHTML = '';
                 const arrayBuffer = await file.arrayBuffer();
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
                 const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const label = document.createElement('label');
-                    label.innerHTML = `<input type="checkbox" value="${i}" checked> Page ${i}`;
+                    label.innerHTML = `<input type="checkbox" value="${i}" checked aria-label="Page ${i}"> Page ${i}`;
                     pageSelection.appendChild(label);
                 }
                 await updatePageSelect('convertPdf', pdf.numPages);
             } catch (e) {
                 console.error('Error updating page selection:', e);
-                alert('Failed to load page selection.');
+                alert('Failed to load page selection. The file may be corrupted.');
             }
         }
 
         async function convertPdfToImage() {
             const fileInput = document.getElementById('convertPdfInput');
             const file = fileInput.files[0];
+            const format = document.getElementById('imageFormat').value;
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
                 return;
             }
+            if (!validateFile(file)) return;
             logFile(file, 'Convert PDF to Image');
             showProgress('convertPdf', 10);
             try {
                 const arrayBuffer = await file.arrayBuffer();
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
                 const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                 const selectedPages = Array.from(document.getElementById('pageSelection').querySelectorAll('input:checked')).map(input => parseInt(input.value));
                 if (selectedPages.length === 0) {
-                    alert('Please select at least one page!');
+                    alert('Please select at least one page.');
+                    return;
+                }
+                if (selectedPages.some(page => page < 1 || page > pdf.numPages)) {
+                    alert('Invalid page selection.');
                     return;
                 }
                 previewData.convertPdf = [];
@@ -983,14 +1325,15 @@
                     canvas.height = viewport.height;
                     const context = canvas.getContext('2d');
                     await page.render({ canvasContext: context, viewport }).promise;
-                    const imgData = canvas.toDataURL('image/png');
+                    const imgData = canvas.toDataURL(`image/${format}`);
                     previewData.convertPdf.push({ pageNum, imgData });
                     showProgress('convertPdf', 30 + (i + 1) / selectedPages.length * 60);
                 }
+                showProgress('convertPdf', 90);
                 return previewData.convertPdf;
             } catch (e) {
                 console.error('Error converting PDF to image:', e);
-                alert('Failed to convert PDF to image.');
+                alert('Failed to convert PDF to image. The file may be corrupted or password-protected.');
             }
         }
 
@@ -1005,18 +1348,21 @@
                     const img = document.createElement('img');
                     img.src = imgData;
                     previewDiv.appendChild(img);
+                    showProgress('convertPdf', 100);
+                    document.getElementById('convertPdfDownload').style.display = 'inline-block';
+                } else {
+                    alert('Selected page not found in preview.');
                 }
-                showProgress('convertPdf', 100);
-                document.getElementById('convertPdfDownload').style.display = 'inline-block';
             }
         }
 
         function downloadConvertPdf() {
             if (previewData.convertPdf) {
+                const format = document.getElementById('imageFormat').value;
                 previewData.convertPdf.forEach(img => {
                     const a = document.createElement('a');
                     a.href = img.imgData;
-                    a.download = `page${img.pageNum}.png`;
+                    a.download = `page${img.pageNum}.${format}`;
                     a.click();
                 });
                 closeModal('convertPdfModal');
@@ -1027,13 +1373,16 @@
             const fileInput = document.getElementById('editPdfInput');
             const file = fileInput.files[0];
             const text = document.getElementById('editTextInput').value;
+            const xPos = parseInt(document.getElementById('textXPos').value);
+            const yPos = parseInt(document.getElementById('textYPos').value);
             const addRectangle = document.getElementById('addRectangle').checked;
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
                 return;
             }
+            if (!validateFile(file)) return;
             if (!text && !addRectangle) {
-                alert('Please enter text or select to add a rectangle!');
+                alert('Please enter text or select to add a rectangle.');
                 return;
             }
             logFile(file, 'Edit PDF');
@@ -1045,7 +1394,7 @@
                 const page = pdfDoc.getPage(0);
                 const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
                 if (text) {
-                    page.drawText(text, { x: 50, y: 50, size: 12, font, color: PDFLib.rgb(1, 0, 0) });
+                    page.drawText(text, { x: xPos, y: yPos, size: 12, font, color: PDFLib.rgb(1, 0, 0) });
                 }
                 if (addRectangle) {
                     page.drawRectangle({ x: 100, y: 100, width: 100, height: 50, borderColor: PDFLib.rgb(0, 0, 1), borderWidth: 2 });
@@ -1054,10 +1403,11 @@
                 const pdfBytes = await pdfDoc.save();
                 previewData.editPdf = pdfBytes;
                 await updatePageSelect('editPdf', pdfDoc.getPageCount());
+                showProgress('editPdf', 90);
                 return pdfBytes;
             } catch (e) {
                 console.error('Error editing PDF:', e);
-                alert('Failed to edit PDF.');
+                alert('Failed to edit PDF. The file may be corrupted.');
             }
         }
 
@@ -1083,11 +1433,12 @@
             const file = fileInput.files[0];
             const password = document.getElementById('passwordInput').value;
             if (!file) {
-                alert('Please upload a PDF file!');
+                alert('Please upload a PDF file.');
                 return;
             }
+            if (!validateFile(file)) return;
             if (!password) {
-                alert('Please enter a password!');
+                alert('Please enter a password.');
                 return;
             }
             logFile(file, 'Secure PDF');
@@ -1096,16 +1447,16 @@
                 const { PDFDocument } = PDFLib;
                 const arrayBuffer = await file.arrayBuffer();
                 const pdfDoc = await PDFDocument.load(arrayBuffer);
-                pdfDoc.setUserPassword(password);
-                pdfDoc.setPermissions({ modifying: false, annotating: false, printing: 'lowResolution' });
+                pdfDoc.encrypt({ userPassword: password, permissions: { modifying: false, annotating: false, printing: 'lowResolution' } });
                 showProgress('pdfSecurity', 50);
                 const pdfBytes = await pdfDoc.save();
                 previewData.pdfSecurity = pdfBytes;
                 await updatePageSelect('pdfSecurity', pdfDoc.getPageCount());
+                showProgress('pdfSecurity', 90);
                 return pdfBytes;
             } catch (e) {
                 console.error('Error securing PDF:', e);
-                alert('Failed to secure PDF.');
+                alert('Failed to secure PDF. The file may be corrupted.');
             }
         }
 
@@ -1128,7 +1479,7 @@
 
         function downloadFile(data, fileName) {
             try {
-                const blob = new Blob([data], { type: fileName.endsWith('.pdf') ? 'application/pdf' : 'image/png' });
+                const blob = new Blob([data], { type: fileName.endsWith('.pdf') ? 'application/pdf' : `image/${fileName.split('.').pop()}` });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
